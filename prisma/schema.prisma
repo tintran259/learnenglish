@@ -10,14 +10,37 @@ datasource db {
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
 model User {
-  id            String       @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String       @unique
+  email         String        @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   vocabulary    Vocabulary[]
-  createdAt     DateTime     @default(now())
+  settings      UserSettings?
+  dailyReviews  DailyReview[]
+  createdAt     DateTime      @default(now())
+}
+
+model UserSettings {
+  id             String @id @default(cuid())
+  userId         String @unique
+  dailyTarget    Int    @default(10)
+  currentStreak  Int    @default(0)
+  bestStreak     Int    @default(0)
+  lastActiveDate String @default("")
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DailyReview {
+  id       String @id @default(cuid())
+  userId   String
+  date     String
+  reviewed Int    @default(0)
+  correct  Int    @default(0)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
 }
 
 model Account {

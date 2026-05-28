@@ -202,12 +202,44 @@ export async function refetchWordAudio(id: string) {
 
 export async function markReview(id: string, correct: boolean) {
   const userId = await requireUserId();
-  await db.vocabulary.update({
-    where: { id, userId },
-    data: {
-      reviewCount: { increment: 1 },
-      correctCount: correct ? { increment: 1 } : undefined,
-      lastReviewedAt: new Date(),
-    },
-  });
+  const today = new Date().toISOString().split("T")[0];
+
+  await Promise.all([
+    db.vocabulary.update({
+      where: { id, userId },
+      data: {
+        reviewCount: { increment: 1 },
+        correctCount: correct ? { increment: 1 } : undefined,
+        lastReviewedAt: new Date(),
+      },
+    }),
+    db.dailyReview.upsert({
+      where: { userId_date: { userId, date: today } },
+      create: { userId, date: today, reviewed: 1, correct: correct ? 1 : 0 },
+      update: {
+        reviewed: { increment: 1 },
+        ...(correct ? { correct: { increment: 1 } } : {}),
+      },
+    }),
+  ]);
+
+  // Update streak only on first review of the day
+  const settings = await db.userSettings.findUnique({ where: { userId } });
+  if (settings?.lastActiveDate !== today) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+    const currentStreak =
+      settings?.lastActiveDate === yesterdayStr
+        ? (settings.currentStreak ?? 0) + 1
+        : 1;
+    const bestStreak = Math.max(currentStreak, settings?.bestStreak ?? 0);
+
+    await db.userSettings.upsert({
+      where: { userId },
+      create: { userId, currentStreak, bestStreak, lastActiveDate: today },
+      update: { currentStreak, bestStreak, lastActiveDate: today },
+    });
+  }
 }

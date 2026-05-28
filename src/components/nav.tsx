@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/theme-provider";
-import { BookOpen, LayoutGrid, RotateCcw, Sun, Moon, LogOut } from "lucide-react";
+import { BookOpen, LayoutGrid, RotateCcw, BarChart2, Sun, Moon, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOutAction } from "@/actions/auth";
 
@@ -12,6 +12,7 @@ const links = [
   { href: "/", label: "Home", icon: LayoutGrid },
   { href: "/vocabulary", label: "Words", icon: BookOpen },
   { href: "/review", label: "Review", icon: RotateCcw },
+  { href: "/stats", label: "Stats", icon: BarChart2 },
 ];
 
 function ThemeToggle() {

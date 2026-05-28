@@ -1,35 +1,51 @@
 import Link from "next/link";
 import { BookOpen, Zap, Target, Award } from "lucide-react";
 import { getStats, getAllVocabulary } from "@/actions/vocabulary";
+import { getStreakInfo } from "@/actions/stats";
 
 export default async function HomePage() {
-  const [stats, recent] = await Promise.all([getStats(), getAllVocabulary()]);
+  const [stats, recent, streakInfo] = await Promise.all([
+    getStats(),
+    getAllVocabulary(),
+    getStreakInfo(),
+  ]);
   const recents = recent.slice(0, 5);
+  const { currentStreak, dailyTarget, todayReviewed } = streakInfo;
+  const todayPct = Math.min(Math.round((todayReviewed / dailyTarget) * 100), 100);
+  const goalMet = todayReviewed >= dailyTarget;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 space-y-8">
 
       {/* ── Hero ────────────────────────────────────────────────────── */}
       <div className="rounded-xl bg-[#58cc02] p-6 text-white shadow-[0_6px_0_#46a302]">
-        <p className="text-sm font-bold uppercase tracking-widest opacity-80">
-          Daily Streak 🔥
-        </p>
-        <h1 className="mt-1 text-3xl font-black tracking-tight">
-          Keep it up!
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-bold uppercase tracking-widest opacity-80">
+            Daily Streak
+          </p>
+          <Link
+            href="/stats"
+            className="flex items-center gap-1.5 rounded-lg bg-white/20 px-3 py-1 text-xs font-extrabold hover:bg-white/30 transition-colors"
+          >
+            {currentStreak > 0 ? `🔥 ${currentStreak} days` : "Start streak"}
+          </Link>
+        </div>
+        <h1 className="mt-2 text-3xl font-black tracking-tight">
+          {goalMet ? "Goal reached! 🎉" : "Keep it up!"}
         </h1>
         <p className="mt-1 opacity-80 text-sm">
-          You have <strong>{stats.total}</strong> words ready to practice.
+          {goalMet
+            ? `You reviewed ${todayReviewed} words today.`
+            : `Today: ${todayReviewed} / ${dailyTarget} words reviewed.`}
         </p>
-        <div className="mt-4 h-2 w-full rounded-full bg-white/30">
+        <div className="mt-4 h-2.5 w-full rounded-full bg-white/30">
           <div
-            className="h-2 rounded-full bg-white transition-all duration-700"
-            style={{
-              width: stats.total > 0 ? `${Math.min((stats.reviewed / stats.total) * 100, 100)}%` : "0%",
-            }}
+            className="h-2.5 rounded-full bg-white transition-all duration-700"
+            style={{ width: `${todayPct}%` }}
           />
         </div>
         <p className="mt-1 text-xs opacity-70">
-          {stats.reviewed} / {stats.total} reviewed
+          {stats.reviewed} / {stats.total} words ever reviewed
         </p>
       </div>
 
