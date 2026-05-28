@@ -53,7 +53,7 @@ export function Nav({ user }: NavProps) {
             L
           </span>
           <span className="hidden font-extrabold tracking-tight text-[#58cc02] sm:inline text-sm">
-            LearnVocabulary
+            Learn Vocabulary
           </span>
         </Link>
 

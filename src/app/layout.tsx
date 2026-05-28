@@ -9,9 +9,32 @@ import "./globals.css";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
+const APP_URL = "https://learnvocabulary-tau.vercel.app";
+
 export const metadata: Metadata = {
-  title: "LearnVocabulary",
-  description: "Your personal vocabulary trainer",
+  metadataBase: new URL(APP_URL),
+  title: {
+    default: "Learn Vocabulary",
+    template: "%s | Learn Vocabulary",
+  },
+  description:
+    "Build your vocabulary with flashcards, audio pronunciation, and daily streaks. Add words, practice with IPA audio, and track your progress.",
+  keywords: ["vocabulary", "flashcards", "english", "learning", "IPA", "pronunciation"],
+  authors: [{ name: "Learn Vocabulary" }],
+  openGraph: {
+    type: "website",
+    url: APP_URL,
+    title: "Learn Vocabulary — Personal Vocabulary Trainer",
+    description:
+      "Build your vocabulary with flashcards, audio pronunciation, and daily streaks.",
+    siteName: "Learn Vocabulary",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Learn Vocabulary — Personal Vocabulary Trainer",
+    description:
+      "Build your vocabulary with flashcards, audio pronunciation, and daily streaks.",
+  },
 };
 
 export default async function RootLayout({
