@@ -15,7 +15,8 @@ interface Word {
   meaning: string;
   ipa: string;
   audioUrl: string;
-  examples: string;
+  examples: string;     // merged examples for display
+  userExamples: string; // raw personal examples for edit form
   reviewCount: number;
   correctCount: number;
 }
@@ -154,7 +155,7 @@ export function VocabularyList({ words }: VocabularyListProps) {
                 {/* Edit */}
                 <WordDialog
                   mode="edit"
-                  word={w}
+                  word={{ id: w.id, word: w.word, meaning: w.meaning, examples: w.userExamples }}
                   trigger={
                     <button
                       className="flex h-8 w-8 items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"

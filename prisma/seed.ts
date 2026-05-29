@@ -122,9 +122,17 @@ async function main() {
   let created = 0;
   let skipped = 0;
 
-  for (const word of words) {
+  for (const { word, meaning } of words) {
     try {
-      await db.vocabulary.create({ data: { ...word, userId } });
+      // Upsert global Word, then create per-user entry
+      const wordRecord = await db.word.upsert({
+        where: { word },
+        create: { word },
+        update: {},
+      });
+      await db.userVocabulary.create({
+        data: { userId, wordId: wordRecord.id, meaning },
+      });
       created++;
     } catch {
       skipped++;
