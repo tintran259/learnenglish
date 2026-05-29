@@ -38,12 +38,12 @@ const initial: VocabularyFormState = { success: false, message: "" };
 
 function parseExamplesForTextarea(raw?: string): string {
   if (!raw) return "";
+  // userExamples is stored as plain newline-separated text
   try {
     const arr = JSON.parse(raw) as string[];
-    return arr.join("\n");
-  } catch {
-    return "";
-  }
+    if (Array.isArray(arr)) return arr.join("\n");
+  } catch {}
+  return raw;
 }
 
 export function WordDialog({ mode, word, trigger }: WordDialogProps) {
@@ -81,8 +81,8 @@ export function WordDialog({ mode, word, trigger }: WordDialogProps) {
           </DialogTitle>
           <DialogDescription className="text-sm">
             IPA & audio auto-fetched.{" "}
-            <span className="font-medium">Examples optional</span> — one per line,
-            or leave blank to auto-fetch.
+            <span className="font-medium">Examples optional</span> — one per line.
+            Leave blank to use shared auto-fetched examples.
           </DialogDescription>
         </DialogHeader>
 
