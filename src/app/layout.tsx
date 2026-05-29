@@ -5,6 +5,7 @@ import { Nav } from "@/components/nav";
 import { ThemeProvider } from "@/components/theme-provider";
 import { auth } from "@/auth";
 import NextTopLoader from "nextjs-toploader";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -53,6 +54,7 @@ export default async function RootLayout({
           <Nav user={session?.user} />
           <div className="flex-1">{children}</div>
           <Toaster richColors position="top-center" duration={2000} />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
