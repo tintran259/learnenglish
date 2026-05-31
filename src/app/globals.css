@@ -28,8 +28,8 @@
   --color-input:                   var(--input);
   --color-ring:                    var(--ring);
 
-  --color-duo-green:   #58cc02;
-  --color-duo-green-dark: #46a302;
+  --color-duo-green:   var(--app-primary);
+  --color-duo-green-dark: var(--app-primary-shadow);
   --color-duo-blue:    #1cb0f6;
   --color-duo-gold:    #ffc800;
   --color-duo-red:     #ff4b4b;
@@ -43,6 +43,12 @@
   --radius-2xl: calc(var(--radius) * 2.5);
 }
 
+/* ── Color theme (JS sets these via localStorage on load) ────────────────── */
+:root {
+  --app-primary: #84cc16;
+  --app-primary-shadow: #65a30d;
+}
+
 /* ── Light mode ──────────────────────────────────────────────────────────── */
 :root {
   --background:           oklch(0.98 0 0);
@@ -54,8 +60,7 @@
   --popover:              oklch(1 0 0);
   --popover-foreground:   oklch(0.15 0 0);
 
-  /* Duolingo green as primary */
-  --primary:              #58cc02;
+  --primary:              var(--app-primary);
   --primary-foreground:   oklch(1 0 0);
 
   --secondary:            oklch(0.95 0.01 140);
@@ -71,7 +76,7 @@
 
   --border:               oklch(0.88 0 0);
   --input:                oklch(0.88 0 0);
-  --ring:                 #58cc02;
+  --ring:                 var(--app-primary);
 
   --radius:               0.375rem;
 }
@@ -103,7 +108,7 @@
 
   --border:               oklch(0.35 0.008 265);
   --input:                oklch(0.35 0.008 265);
-  --ring:                 #58cc02;
+  --ring:                 var(--app-primary);
 }
 
 /* ── Base styles ─────────────────────────────────────────────────────────── */

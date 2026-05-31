@@ -4,14 +4,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/theme-provider";
-import { BookOpen, LayoutGrid, RotateCcw, BarChart2, Sun, Moon, LogOut } from "lucide-react";
+import { BookOpen, LayoutGrid, RotateCcw, BarChart2, Sun, Moon, LogOut, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOutAction } from "@/actions/auth";
+import { ColorPicker } from "@/components/color-picker";
 
 const links = [
   { href: "/", label: "Home", icon: LayoutGrid },
   { href: "/vocabulary", label: "Words", icon: BookOpen },
   { href: "/review", label: "Review", icon: RotateCcw },
+  { href: "/grammar", label: "Grammar", icon: GraduationCap },
   { href: "/stats", label: "Stats", icon: BarChart2 },
 ];
 
@@ -45,14 +47,14 @@ export function Nav({ user }: NavProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
 
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#58cc02] shadow-[0_3px_0_#46a302] text-white text-sm font-black select-none">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--app-primary)] shadow-[0_3px_0_var(--app-primary-shadow)] text-white text-sm font-black select-none">
             L
           </span>
-          <span className="hidden font-extrabold tracking-tight text-[#58cc02] sm:inline text-sm">
+          <span className="hidden font-extrabold tracking-tight text-[var(--app-primary)] sm:inline text-sm">
             Learn Vocabulary
           </span>
         </Link>
@@ -68,7 +70,7 @@ export function Nav({ user }: NavProps) {
                 className={cn(
                   "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-bold transition-all",
                   active
-                    ? "bg-[#58cc02]/15 text-[#58cc02]"
+                    ? "bg-[var(--app-primary)]/15 text-[var(--app-primary)]"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
@@ -79,6 +81,7 @@ export function Nav({ user }: NavProps) {
           })}
 
           <div className="mx-1 h-5 w-px bg-border" />
+          <ColorPicker />
           <ThemeToggle />
 
           {/* User avatar + sign out */}
@@ -93,7 +96,7 @@ export function Nav({ user }: NavProps) {
                   className="rounded-full border-2 border-border"
                 />
               ) : (
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#58cc02]/20 text-xs font-bold text-[#58cc02]">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--app-primary)]/20 text-xs font-bold text-[var(--app-primary)]">
                   {user.name?.[0]?.toUpperCase() ?? "U"}
                 </div>
               )}

@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { auth } from "@/auth";
 import NextTopLoader from "nextjs-toploader";
 import { Analytics } from "@vercel/analytics/next";
+import { THEME_INIT_SCRIPT } from "@/lib/color-themes";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -48,9 +49,12 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <ThemeProvider>
-          <NextTopLoader color="#58cc02" shadow="0 0 10px #58cc02" height={3} showSpinner={false} />
+          <NextTopLoader color="var(--app-primary)" shadow="0 0 10px var(--app-primary)" height={3} showSpinner={false} />
           <Nav user={session?.user} />
           <div className="flex-1">{children}</div>
           <Toaster richColors position="top-center" duration={2000} />

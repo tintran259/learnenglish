@@ -14,7 +14,7 @@ export function TargetForm({ current }: { current: number }) {
 
   return (
     <form ref={formRef} action={handleAction} className="flex gap-2">
-      <div className="flex flex-1 items-center rounded-lg border-2 bg-background transition-colors focus-within:border-[#58cc02] overflow-hidden">
+      <div className="flex flex-1 items-center rounded-lg border-2 bg-background transition-colors focus-within:border-[var(--app-primary)] overflow-hidden">
         <input
           type="number"
           name="target"
@@ -30,7 +30,7 @@ export function TargetForm({ current }: { current: number }) {
       </div>
       <button
         type="submit"
-        className="btn-duo rounded-lg bg-[#58cc02] px-5 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_0_#46a302] hover:bg-[#4db801] transition-colors"
+        className="btn-duo rounded-lg bg-[var(--app-primary)] px-5 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_0_var(--app-primary-shadow)] hover:bg-[var(--app-primary-shadow)] transition-colors"
       >
         Save
       </button>

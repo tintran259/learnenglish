@@ -1,7 +1,10 @@
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { BookOpen, RotateCcw, Target, Zap } from "lucide-react";
 import { ReviewSession } from "@/components/review-session";
 import { getRandomVocabulary, getStats } from "@/actions/vocabulary";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Review" };
 
 interface ReviewPageProps {
   searchParams: Promise<{ count?: string }>;
@@ -11,44 +14,59 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
   const { count: countParam } = await searchParams;
   const count = Math.min(Math.max(parseInt(countParam ?? "0", 10), 1), 200);
 
-  /* ── Setup screen ─────────────────────────────────────────────────── */
   if (!countParam) {
     const stats = await getStats();
+    const progressPct = stats.total > 0 ? Math.min((stats.reviewed / stats.total) * 100, 100) : 0;
 
     return (
-      <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
+      <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
+
+        {/* Header */}
         <div>
           <h1 className="text-2xl font-black tracking-tight">Flashcard Review</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {stats.total} words · {stats.reviewed} reviewed · {stats.accuracy}% accuracy
-          </p>
+          <p className="text-sm text-muted-foreground mt-0.5">Practice and strengthen your vocabulary</p>
         </div>
 
-        {/* XP bar */}
+        {/* Progress banner */}
         {stats.total > 0 && (
-          <div className="rounded-xl bg-[#58cc02] p-5 text-white shadow-[0_5px_0_#46a302] space-y-2">
-            <p className="text-sm font-extrabold">Overall progress</p>
-            <div className="h-3 w-full rounded-full bg-white/30">
-              <div
-                className="h-3 rounded-full bg-white transition-all"
-                style={{ width: `${Math.min((stats.reviewed / stats.total) * 100, 100)}%` }}
-              />
+          <div
+            className="rounded-2xl p-5 text-white space-y-3 relative overflow-hidden"
+            style={{ background: "linear-gradient(135deg, var(--app-primary) 0%, var(--app-primary-shadow) 100%)", boxShadow: "0 5px 0 var(--app-primary-shadow)" }}
+          >
+            <div className="pointer-events-none absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10" />
+            <div className="flex items-center justify-between relative">
+              <div>
+                <p className="text-sm font-extrabold">Overall Progress</p>
+                <p className="text-xs opacity-75 mt-0.5">{stats.reviewed} of {stats.total} words reviewed</p>
+              </div>
+              <div className="flex gap-4 text-center">
+                {[
+                  { icon: BookOpen, label: "Words", value: stats.total },
+                  { icon: Zap,      label: "Reviewed", value: stats.reviewed },
+                  { icon: Target,   label: "Accuracy", value: `${stats.accuracy}%` },
+                ].map(({ icon: Icon, label, value }) => (
+                  <div key={label}>
+                    <p className="text-xl font-black">{value}</p>
+                    <p className="text-[10px] opacity-70 uppercase tracking-wide">{label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <p className="text-xs opacity-80">
-              {stats.reviewed} / {stats.total} words reviewed
-            </p>
+            <div className="relative h-2.5 w-full rounded-full bg-white/25">
+              <div className="h-2.5 rounded-full bg-white transition-all duration-700" style={{ width: `${progressPct}%` }} />
+            </div>
           </div>
         )}
 
-        {/* Quick-pick buttons */}
-        <div className="card-duo rounded-xl border-2 bg-card p-6 space-y-5">
-          <p className="font-extrabold text-sm uppercase tracking-wider text-muted-foreground">
-            How many words?
-          </p>
+        {/* Count picker */}
+        <div className="card-duo rounded-2xl border-2 bg-card p-6 space-y-5">
+          <div>
+            <p className="font-extrabold text-base">How many words?</p>
+            <p className="text-sm text-muted-foreground mt-0.5">Choose a session size to begin</p>
+          </div>
 
           <form method="GET" className="space-y-4">
-            {/* Quick picks */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3">
               {[5, 10, 20, 30].map((n) => (
                 <button
                   key={n}
@@ -56,29 +74,34 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
                   name="count"
                   value={n}
                   disabled={stats.total === 0}
-                  className="btn-duo rounded-lg border-2 py-3 text-base font-black hover:border-[#58cc02] hover:bg-[#58cc02]/10 hover:text-[#58cc02] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="btn-duo group flex flex-col items-center gap-1 rounded-2xl border-2 bg-background py-4 font-black transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:border-[color:var(--app-primary)] hover:bg-[color-mix(in_srgb,var(--app-primary)_10%,transparent)]"
                 >
-                  {n}
+                  <span className="text-2xl" style={{ color: "var(--app-primary)" }}>{n}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                    {n === 5 ? "Quick" : n === 10 ? "Standard" : n === 20 ? "Long" : "Marathon"}
+                  </span>
                 </button>
               ))}
             </div>
 
-            {/* Custom input + Go */}
             <div className="flex gap-2">
-              <input
-                name="count"
-                type="number"
-                min={1}
-                max={200}
-                defaultValue={10}
-                disabled={stats.total === 0}
-                placeholder="Custom"
-                className="flex h-11 flex-1 rounded-lg border-2 bg-transparent px-3 text-sm font-semibold transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-[#58cc02] disabled:opacity-40"
-              />
+              <div className="relative flex-1">
+                <input
+                  name="count"
+                  type="number"
+                  min={1}
+                  max={200}
+                  defaultValue={10}
+                  disabled={stats.total === 0}
+                  placeholder="Custom amount"
+                  className="h-12 w-full rounded-xl border-2 bg-background px-4 text-sm font-semibold placeholder:text-muted-foreground focus:outline-none focus:border-[color:var(--app-primary)] disabled:opacity-40 transition-colors"
+                />
+              </div>
               <button
                 type="submit"
                 disabled={stats.total === 0}
-                className="btn-duo shrink-0 rounded-lg bg-[#58cc02] px-6 py-2 text-sm font-extrabold text-white shadow-[0_4px_0_#46a302] hover:bg-[#4db801] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="btn-duo shrink-0 rounded-xl px-6 text-sm font-extrabold text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                style={{ backgroundColor: "var(--app-primary)", boxShadow: "0 4px 0 var(--app-primary-shadow)" }}
               >
                 Start →
               </button>
@@ -86,22 +109,29 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
           </form>
 
           {stats.total === 0 && (
-            <div className="flex items-center gap-2 rounded-lg bg-muted p-3 text-sm text-muted-foreground">
-              <BookOpen className="h-4 w-4 shrink-0" />
-              <span>
+            <div className="flex items-center gap-3 rounded-xl bg-muted px-4 py-3 text-sm">
+              <BookOpen className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span className="text-muted-foreground">
                 No words yet.{" "}
-                <Link href="/vocabulary" className="font-bold text-[#58cc02] underline underline-offset-4">
+                <Link href="/vocabulary" className="font-bold underline underline-offset-4" style={{ color: "var(--app-primary)" }}>
                   Add some first
                 </Link>
               </span>
             </div>
           )}
         </div>
+
+        {/* Tip */}
+        <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
+          <RotateCcw className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            <span className="font-bold">Tip:</span> Press <kbd className="rounded border border-border bg-muted px-1 text-[10px]">Space</kbd> to flip a card, <kbd className="rounded border border-border bg-muted px-1 text-[10px]">←</kbd> wrong, <kbd className="rounded border border-border bg-muted px-1 text-[10px]">→</kbd> correct.
+          </p>
+        </div>
       </main>
     );
   }
 
-  /* ── Active session ───────────────────────────────────────────────── */
   const words = await getRandomVocabulary(count);
 
   if (words.length === 0) {
@@ -109,7 +139,7 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
       <main className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4 text-center">
         <span className="text-5xl">📚</span>
         <p className="font-extrabold text-lg">No words in your collection</p>
-        <Link href="/vocabulary" className="text-sm font-bold text-[#58cc02] underline underline-offset-4">
+        <Link href="/vocabulary" className="text-sm font-bold underline underline-offset-4" style={{ color: "var(--app-primary)" }}>
           Add your first word
         </Link>
       </main>

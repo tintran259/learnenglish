@@ -31,7 +31,7 @@ export function WeeklyChart({ data, target }: { data: DayData[]; target: number 
         {hovered && hovered.reviewed > 0 ? (
           <div className="flex items-center gap-3 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs">
             <span className="font-extrabold">{hovered.day}</span>
-            <span className="font-bold text-[#58cc02]">{hovered.correct} correct</span>
+            <span className="font-bold text-[var(--app-primary)]">{hovered.correct} correct</span>
             <span className="text-muted-foreground">{hovered.reviewed} total</span>
             <span className="text-muted-foreground">
               · {Math.round((hovered.correct / hovered.reviewed) * 100)}% acc
@@ -62,11 +62,11 @@ export function WeeklyChart({ data, target }: { data: DayData[]; target: number 
         {/* Target line */}
         <line
           x1={0} y1={targetY} x2={VW} y2={targetY}
-          stroke="#58cc02" strokeWidth={1.5} strokeDasharray="5 4" opacity={0.6}
+          stroke="var(--app-primary)" strokeWidth={1.5} strokeDasharray="5 4" opacity={0.6}
         />
         <text
           x={VW} y={targetY - 5}
-          textAnchor="end" fontSize={9} fill="#58cc02" opacity={0.8} fontWeight="700"
+          textAnchor="end" fontSize={9} fill="var(--app-primary)" opacity={0.8} fontWeight="700"
         >
           {target}
         </text>
@@ -107,7 +107,7 @@ export function WeeklyChart({ data, target }: { data: DayData[]; target: number 
                 <rect
                   x={x} y={CH - correctBarH} width={barW} height={correctBarH}
                   rx={5} ry={5}
-                  fill="#58cc02"
+                  fill="var(--app-primary)"
                   opacity={metTarget ? (isHovered ? 1 : 0.9) : (isHovered ? 0.65 : 0.5)}
                 />
               )}
