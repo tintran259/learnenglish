@@ -118,18 +118,19 @@ export function VocabularyList({ words }: { words: Word[] }) {
               >
                 <div className="flex flex-1 items-center gap-3 px-4 py-3 min-w-0">
                   {/* Word info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-extrabold text-[15px]">{w.word}</span>
+                  <div className="flex-1 min-w-0 overflow-hidden">
+                    <div className="flex items-baseline gap-1.5 min-w-0">
+                      <span className="font-extrabold text-[15px] truncate shrink-0 max-w-[45%] sm:max-w-none">{w.word}</span>
                       {w.ipa && (
-                        <span className="hidden sm:inline font-mono text-xs text-muted-foreground">{w.ipa}</span>
+                        <span className="hidden sm:inline font-mono text-xs text-muted-foreground truncate">{w.ipa}</span>
                       )}
                     </div>
-                    <p className="mt-0.5 text-sm text-muted-foreground line-clamp-1">{w.meaning}</p>
+                    <p className="mt-0.5 text-sm text-muted-foreground truncate">{w.meaning}</p>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex shrink-0 items-center gap-1">
+                  <div className="flex shrink-0 items-center gap-0.5">
+                    {/* Mastery badge — desktop only */}
                     {badge && (
                       <span
                         className="hidden sm:block rounded-full px-2 py-0.5 text-[11px] font-extrabold mr-1"
@@ -139,6 +140,7 @@ export function VocabularyList({ words }: { words: Word[] }) {
                       </span>
                     )}
 
+                    {/* Audio — always visible */}
                     <button
                       onClick={(e) => playAudio(w, e)}
                       className="flex h-8 w-8 items-center justify-center rounded-xl text-[#1cb0f6] hover:bg-[#1cb0f6]/15 transition-colors"
@@ -147,15 +149,17 @@ export function VocabularyList({ words }: { words: Word[] }) {
                       <Volume2 className="h-3.5 w-3.5" />
                     </button>
 
+                    {/* Refresh — desktop only */}
                     <button
                       onClick={(e) => handleRefresh(w.id, w.word, e)}
                       disabled={refreshingId === w.id}
-                      className="flex h-8 w-8 items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-40"
+                      className="hidden sm:flex h-8 w-8 items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition-colors disabled:opacity-40"
                       title="Refresh IPA & audio"
                     >
                       <RefreshCw className={`h-3.5 w-3.5 ${refreshingId === w.id ? "animate-spin" : ""}`} />
                     </button>
 
+                    {/* Edit — always visible */}
                     <WordDialog
                       mode="edit"
                       word={{ id: w.id, word: w.word, meaning: w.meaning, examples: w.userExamples }}
@@ -165,6 +169,8 @@ export function VocabularyList({ words }: { words: Word[] }) {
                         </button>
                       }
                     />
+
+                    {/* Delete — always visible */}
                     <DeleteWordButton id={w.id} word={w.word} />
                   </div>
                 </div>

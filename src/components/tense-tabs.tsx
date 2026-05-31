@@ -49,7 +49,7 @@ function TenseCard({ tense }: { tense: (typeof tenses)[0] }) {
           {/* Usage + Signals */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground mb-2">Cách dùng</p>
+              <p className="text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground mb-2">When to use</p>
               <ul className="space-y-1.5">
                 {tense.usage.map((u) => (
                   <li key={u} className="flex items-start gap-2 text-sm">
@@ -60,7 +60,7 @@ function TenseCard({ tense }: { tense: (typeof tenses)[0] }) {
               </ul>
             </div>
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground mb-2">Dấu hiệu nhận biết</p>
+              <p className="text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground mb-2">Signal Words</p>
               <div className="flex flex-wrap gap-1.5">
                 {tense.signals.map((s) => (
                   <span
@@ -77,12 +77,12 @@ function TenseCard({ tense }: { tense: (typeof tenses)[0] }) {
 
           {/* Examples */}
           <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground mb-2">Ví dụ</p>
+            <p className="text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground mb-2">Examples</p>
             <div className="space-y-2">
               {tense.examples.map((ex, i) => (
                 <div key={i} className="rounded-xl border bg-muted/30 px-4 py-3 border-border">
                   <p className="font-semibold text-sm">{ex.en}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{ex.vi}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 italic">{ex.note}</p>
                 </div>
               ))}
             </div>

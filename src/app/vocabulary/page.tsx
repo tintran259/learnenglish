@@ -1,4 +1,4 @@
-import { Plus, BookOpen, Target, Zap } from "lucide-react";
+import { Plus } from "lucide-react";
 import { getAllVocabulary, getStats } from "@/actions/vocabulary";
 import { VocabularyList } from "@/components/vocabulary-list";
 import { WordDialog } from "@/components/word-dialog";
@@ -35,24 +35,26 @@ export default async function VocabularyPage() {
         />
       </div>
 
-      {/* Stats strip */}
+      {/* Stats strip — single card, 3 inline stats */}
       {words.length > 0 && (
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { icon: BookOpen, label: "Total",    value: stats.total,         color: "var(--app-primary)" },
-            { icon: Zap,      label: "Reviewed", value: stats.reviewed,      color: "#1cb0f6" },
-            { icon: Target,   label: "Accuracy", value: `${stats.accuracy}%`, color: "#ffc800" },
-          ].map(({ icon: Icon, label, value, color }) => (
-            <div key={label} className="card-duo flex items-center gap-3 rounded-2xl border-2 bg-card px-4 py-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl" style={{ backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)` }}>
-                <Icon className="h-4 w-4" style={{ color }} />
+        <div className="card-duo rounded-2xl border-2 bg-card">
+          <div className="grid grid-cols-3 divide-x divide-border">
+            {[
+              { emoji: "📚", label: "Total",    value: stats.total,          color: "var(--app-primary)" },
+              { emoji: "⚡", label: "Reviewed", value: stats.reviewed,       color: "#1cb0f6" },
+              { emoji: "🎯", label: "Accuracy", value: `${stats.accuracy}%`, color: "#ffc800" },
+            ].map(({ emoji, label, value, color }) => (
+              <div key={label} className="flex flex-col items-center gap-1 px-3 py-4 text-center">
+                <span className="text-lg leading-none">{emoji}</span>
+                <p className="text-xl font-black leading-none tabular-nums mt-0.5" style={{ color }}>
+                  {value}
+                </p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {label}
+                </p>
               </div>
-              <div>
-                <p className="text-lg font-black leading-none" style={{ color }}>{value}</p>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 

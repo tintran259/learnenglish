@@ -54,6 +54,47 @@ export async function getWeeklyStats() {
   });
 }
 
+export async function getStreakLeaderboard() {
+  const userId = await requireUserId();
+
+  // Fetch top 50 by currentStreak + total count in one go
+  const [allSettings, totalUsers] = await Promise.all([
+    db.userSettings.findMany({
+      orderBy: { currentStreak: "desc" },
+      include: { user: { select: { id: true, name: true, image: true } } },
+      take: 50,
+    }),
+    db.userSettings.count(),
+  ]);
+
+  // Rank is position in the sorted list (1-based)
+  const entries = allSettings.map((s, i) => ({
+    rank: i + 1,
+    userId: s.userId,
+    name: s.user.name,
+    image: s.user.image,
+    currentStreak: s.currentStreak,
+    bestStreak: s.bestStreak,
+    isCurrentUser: s.userId === userId,
+  }));
+
+  // If current user not in top 50, fetch their rank separately
+  const currentUserEntry = entries.find((e) => e.isCurrentUser);
+  let myRank = currentUserEntry?.rank ?? null;
+
+  if (!currentUserEntry) {
+    const mySettings = await db.userSettings.findUnique({ where: { userId } });
+    if (mySettings) {
+      const above = await db.userSettings.count({
+        where: { currentStreak: { gt: mySettings.currentStreak } },
+      });
+      myRank = above + 1;
+    }
+  }
+
+  return { entries: entries.slice(0, 10), myRank, totalUsers };
+}
+
 export async function setDailyTarget(formData: FormData) {
   const userId = await requireUserId();
   const raw = formData.get("target");

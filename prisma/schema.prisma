@@ -17,6 +17,7 @@ model User {
   image          String?
   accounts       Account[]
   userVocabulary UserVocabulary[]
+  notes          Note[]
   settings       UserSettings?
   dailyReviews   DailyReview[]
   createdAt      DateTime        @default(now())
@@ -93,4 +94,17 @@ model UserVocabulary {
   word           Word      @relation(fields: [wordId], references: [id], onDelete: Cascade)
 
   @@unique([userId, wordId])
+}
+
+// ── Notes ─────────────────────────────────────────────────────────────────────
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String   @default("")
+  content   String
+  category  String   @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
