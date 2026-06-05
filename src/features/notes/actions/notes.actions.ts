@@ -7,8 +7,6 @@ import {
 } from "@/features/notes/services/notes.service";
 import type { NoteFormState } from "@/features/notes/types/notes.types";
 
-export type { NoteFormState };
-
 async function requireUserId(): Promise<string> {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
