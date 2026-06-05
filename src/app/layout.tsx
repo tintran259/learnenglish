@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { Nav } from "@/components/nav";
-import { ThemeProvider } from "@/components/theme-provider";
+import { Nav } from "@/components/shared/nav";
+import { ThemeProvider } from "@/components/shared/theme-provider";
 import { auth } from "@/auth";
 import NextTopLoader from "nextjs-toploader";
 import { Analytics } from "@vercel/analytics/next";
@@ -16,39 +16,28 @@ const APP_URL = "https://learnvocabulary-tau.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
-  title: {
-    default: "Learn Vocabulary",
-    template: "%s | Learn Vocabulary",
-  },
-  description:
-    "Build your vocabulary with flashcards, audio pronunciation, and daily streaks. Add words, practice with IPA audio, and track your progress.",
+  title: { default: "Learn Vocabulary", template: "%s | Learn Vocabulary" },
+  description: "Build your vocabulary with flashcards, audio pronunciation, and daily streaks. Add words, practice with IPA audio, and track your progress.",
   keywords: ["vocabulary", "flashcards", "english", "learning", "IPA", "pronunciation"],
   authors: [{ name: "Learn Vocabulary" }],
   openGraph: {
-    type: "website",
-    url: APP_URL,
+    type: "website", url: APP_URL,
     title: "Learn Vocabulary — Personal Vocabulary Trainer",
-    description:
-      "Build your vocabulary with flashcards, audio pronunciation, and daily streaks.",
+    description: "Build your vocabulary with flashcards, audio pronunciation, and daily streaks.",
     siteName: "Learn Vocabulary",
   },
   twitter: {
     card: "summary_large_image",
     title: "Learn Vocabulary — Personal Vocabulary Trainer",
-    description:
-      "Build your vocabulary with flashcards, audio pronunciation, and daily streaks.",
+    description: "Build your vocabulary with flashcards, audio pronunciation, and daily streaks.",
   },
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
 
   return (
-    <html lang="en" suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable}`}
-    >
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>

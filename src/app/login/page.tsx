@@ -1,4 +1,4 @@
-import { signInWithGoogle } from "@/actions/auth";
+import { signInWithGoogle } from "@/features/auth/actions/auth.actions";
 
 export default function LoginPage() {
   return (
@@ -7,48 +7,30 @@ export default function LoginPage() {
       <div className="pointer-events-none absolute -bottom-40 -right-40 h-80 w-80 rounded-full opacity-10 blur-3xl" style={{ backgroundColor: "var(--app-primary)" }} />
 
       <div className="relative w-full max-w-sm space-y-8">
-        {/* Brand */}
         <div className="flex flex-col items-center gap-4 text-center">
-          <div
-            className="flex h-20 w-20 items-center justify-center rounded-2xl text-4xl font-black text-white select-none"
-            style={{ backgroundColor: "var(--app-primary)", boxShadow: "0 6px 0 var(--app-primary-shadow)" }}
-          >
-            L
-          </div>
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl text-4xl font-black text-white select-none" style={{ backgroundColor: "var(--app-primary)", boxShadow: "0 6px 0 var(--app-primary-shadow)" }}>L</div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight" style={{ color: "var(--app-primary)" }}>
-              Learn Vocabulary
-            </h1>
+            <h1 className="text-3xl font-black tracking-tight" style={{ color: "var(--app-primary)" }}>Learn Vocabulary</h1>
             <p className="mt-1 text-sm text-muted-foreground">Your personal vocabulary trainer</p>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
             {["🔊 Audio IPA", "🎯 Flashcards", "🔥 Daily streak"].map((f) => (
-              <span key={f} className="rounded-full border border-border bg-muted/60 px-3 py-1 text-xs font-semibold text-muted-foreground">
-                {f}
-              </span>
+              <span key={f} className="rounded-full border border-border bg-muted/60 px-3 py-1 text-xs font-semibold text-muted-foreground">{f}</span>
             ))}
           </div>
         </div>
 
-        {/* Card */}
         <div className="card-duo rounded-2xl border-2 bg-card p-6 space-y-4">
-          <p className="text-center text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground">
-            Sign in to continue
-          </p>
+          <p className="text-center text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground">Sign in to continue</p>
           <form action={signInWithGoogle}>
-            <button
-              type="submit"
-              className="btn-duo w-full flex items-center justify-center gap-3 rounded-xl border-2 bg-background py-3.5 text-sm font-extrabold transition-colors hover:bg-muted"
-            >
+            <button type="submit" className="btn-duo w-full flex items-center justify-center gap-3 rounded-xl border-2 bg-background py-3.5 text-sm font-extrabold transition-colors hover:bg-muted">
               <GoogleIcon />
               Continue with Google
             </button>
           </form>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          🔒 Your words are private — only you can see them.
-        </p>
+        <p className="text-center text-xs text-muted-foreground">🔒 Your words are private — only you can see them.</p>
       </div>
     </main>
   );
