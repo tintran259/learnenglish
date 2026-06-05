@@ -174,6 +174,42 @@ export async function deleteVocabulary(id: string) {
 }
 
 // ── Read ──────────────────────────────────────────────────────────────────────
+export const VOCABULARY_PAGE_SIZE = 20;
+
+export async function getVocabularyPage(page: number, q: string) {
+  const userId = await requireUserId();
+  const search = q.trim();
+
+  const where = {
+    userId,
+    ...(search
+      ? {
+          OR: [
+            { word: { word: { contains: search } } },
+            { meaning: { contains: search } },
+          ],
+        }
+      : {}),
+  };
+
+  const [rows, total] = await Promise.all([
+    db.userVocabulary.findMany({
+      where,
+      include: { word: true },
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * VOCABULARY_PAGE_SIZE,
+      take: VOCABULARY_PAGE_SIZE,
+    }),
+    db.userVocabulary.count({ where }),
+  ]);
+
+  return {
+    words: rows.map(flatten),
+    total,
+    totalPages: Math.max(1, Math.ceil(total / VOCABULARY_PAGE_SIZE)),
+  };
+}
+
 export async function getAllVocabulary() {
   const userId = await requireUserId();
   const rows = await db.userVocabulary.findMany({

@@ -1,13 +1,24 @@
 import { Plus } from "lucide-react";
-import { getAllVocabulary, getStats } from "@/actions/vocabulary";
+import { getVocabularyPage, getStats } from "@/actions/vocabulary";
 import { VocabularyList } from "@/components/vocabulary-list";
 import { WordDialog } from "@/components/word-dialog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "My Words" };
 
-export default async function VocabularyPage() {
-  const [words, stats] = await Promise.all([getAllVocabulary(), getStats()]);
+export default async function VocabularyPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; q?: string }>;
+}) {
+  const { page: pageStr, q: qStr } = await searchParams;
+  const page = Math.max(1, Number(pageStr) || 1);
+  const q = qStr ?? "";
+
+  const [{ words, total, totalPages }, stats] = await Promise.all([
+    getVocabularyPage(page, q),
+    getStats(),
+  ]);
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
@@ -35,8 +46,8 @@ export default async function VocabularyPage() {
         />
       </div>
 
-      {/* Stats strip — single card, 3 inline stats */}
-      {words.length > 0 && (
+      {/* Stats strip */}
+      {stats.total > 0 && (
         <div className="card-duo rounded-2xl border-2 bg-card">
           <div className="grid grid-cols-3 divide-x divide-border">
             {[
@@ -59,7 +70,7 @@ export default async function VocabularyPage() {
       )}
 
       {/* List */}
-      {words.length === 0 ? (
+      {stats.total === 0 ? (
         <div className="flex flex-col items-center gap-5 py-24 text-center">
           <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-muted text-4xl">📚</div>
           <div>
@@ -80,7 +91,13 @@ export default async function VocabularyPage() {
           />
         </div>
       ) : (
-        <VocabularyList words={words} />
+        <VocabularyList
+          words={words}
+          total={total}
+          page={page}
+          totalPages={totalPages}
+          q={q}
+        />
       )}
     </main>
   );
