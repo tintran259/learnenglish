@@ -8,12 +8,13 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: "Review" };
 
 interface ReviewPageProps {
-  searchParams: Promise<{ count?: string }>;
+  searchParams: Promise<{ count?: string; mode?: string }>;
 }
 
 export default async function ReviewPage({ searchParams }: ReviewPageProps) {
-  const { count: countParam } = await searchParams;
+  const { count: countParam, mode: modeParam } = await searchParams;
   const count = Math.min(Math.max(parseInt(countParam ?? "0", 10), 1), 200);
+  const mode = modeParam === "typing" ? "typing" : "flashcard";
 
   if (!countParam) {
     const stats = await getStats();
@@ -56,6 +57,27 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
             <p className="text-sm text-muted-foreground mt-0.5">Choose a session size to begin</p>
           </div>
           <form method="GET" className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-xs font-extrabold uppercase tracking-wide text-muted-foreground">Mode</p>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="cursor-pointer">
+                  <input type="radio" name="mode" value="flashcard" defaultChecked className="sr-only peer" />
+                  <div className="flex flex-col items-center gap-1.5 rounded-xl border-2 bg-background px-4 py-3 transition-all peer-checked:border-[color:var(--app-primary)] peer-checked:bg-[color-mix(in_srgb,var(--app-primary)_10%,transparent)]">
+                    <span className="text-lg">📖</span>
+                    <span className="text-xs font-extrabold">Flashcard</span>
+                    <span className="text-[10px] text-muted-foreground text-center leading-tight">Xem từ → đoán nghĩa</span>
+                  </div>
+                </label>
+                <label className="cursor-pointer">
+                  <input type="radio" name="mode" value="typing" className="sr-only peer" />
+                  <div className="flex flex-col items-center gap-1.5 rounded-xl border-2 bg-background px-4 py-3 transition-all peer-checked:border-[color:var(--app-primary)] peer-checked:bg-[color-mix(in_srgb,var(--app-primary)_10%,transparent)]">
+                    <span className="text-lg">⌨️</span>
+                    <span className="text-xs font-extrabold">Typing</span>
+                    <span className="text-[10px] text-muted-foreground text-center leading-tight">Xem nghĩa → gõ từ</span>
+                  </div>
+                </label>
+              </div>
+            </div>
             <div className="grid grid-cols-4 gap-3">
               {[5, 10, 20, 30].map((n) => (
                 <button key={n} type="submit" name="count" value={n} disabled={stats.total === 0} className="btn-duo group flex flex-col items-center gap-1 rounded-2xl border-2 bg-background py-4 font-black transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:border-[color:var(--app-primary)] hover:bg-[color-mix(in_srgb,var(--app-primary)_10%,transparent)]">
@@ -82,7 +104,8 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
         <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
           <RotateCcw className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
           <p className="text-xs text-muted-foreground leading-relaxed">
-            <span className="font-bold">Tip:</span> Press <kbd className="rounded border border-border bg-muted px-1 text-[10px]">Space</kbd> to flip a card, <kbd className="rounded border border-border bg-muted px-1 text-[10px]">←</kbd> wrong, <kbd className="rounded border border-border bg-muted px-1 text-[10px]">→</kbd> correct.
+            <span className="font-bold">Tip (Flashcard):</span> <kbd className="rounded border border-border bg-muted px-1 text-[10px]">Space</kbd> flip · <kbd className="rounded border border-border bg-muted px-1 text-[10px]">←</kbd> wrong · <kbd className="rounded border border-border bg-muted px-1 text-[10px]">→</kbd> correct.{" "}
+            <span className="font-bold">Typing:</span> <kbd className="rounded border border-border bg-muted px-1 text-[10px]">Enter</kbd> check / next.
           </p>
         </div>
       </main>
@@ -104,7 +127,7 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
   return (
     <main className="flex min-h-[80vh] flex-col items-center justify-center px-4 py-10">
       <div className="w-full max-w-sm">
-        <ReviewSession words={words} />
+        <ReviewSession words={words} mode={mode} />
       </div>
     </main>
   );

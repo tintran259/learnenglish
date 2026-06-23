@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { RotateCcw, Home, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { Flashcard } from "@/features/vocabulary/components/flashcard";
+import { TypingCard } from "@/features/vocabulary/components/typing-card";
 import { markReview, getRandomVocabulary } from "@/features/vocabulary/actions/review.actions";
 
 interface ReviewWord {
@@ -16,7 +17,7 @@ interface ReviewWord {
   examples: string;
 }
 
-export function ReviewSession({ words: initialWords }: { words: ReviewWord[] }) {
+export function ReviewSession({ words: initialWords, mode = "flashcard" }: { words: ReviewWord[]; mode?: string }) {
   const [words, setWords] = useState<ReviewWord[]>(initialWords);
   const [index, setIndex] = useState(0);
   const [correct, setCorrect] = useState(0);
@@ -89,6 +90,18 @@ export function ReviewSession({ words: initialWords }: { words: ReviewWord[] }) 
           </button>
         </div>
       </div>
+    );
+  }
+
+  if (mode === "typing") {
+    return (
+      <TypingCard
+        key={words[index].id}
+        word={words[index]}
+        index={index}
+        total={words.length}
+        onResult={handleResult}
+      />
     );
   }
 
